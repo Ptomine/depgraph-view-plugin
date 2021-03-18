@@ -30,6 +30,7 @@ import hudson.plugins.depgraph_view.DependencyGraphProperty.DescriptorImpl;
 import hudson.plugins.depgraph_view.model.graph.DependencyGraph;
 import hudson.plugins.depgraph_view.model.graph.ProjectNode;
 import hudson.plugins.depgraph_view.model.graph.edge.Edge;
+import hudson.model.BallColor;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -121,7 +122,7 @@ public class DotStringGenerator extends AbstractDotStringGenerator {
         StringBuilder builder = new StringBuilder();
 
         builder.append("digraph {\n");
-        builder.append("node [shape=box, style=rounded];\n");
+        builder.append("node [shape=box, style=\"filled,rounded\"];\n");
         builder.append("rankdir=").append(rankDirection).append(";\n");
 
         /**** First define all the objects and clusters ****/
@@ -175,8 +176,11 @@ public class DotStringGenerator extends AbstractDotStringGenerator {
     }
 
     private String projectToNodeString(ProjectNode proj) {
+        String statusColor = proj.getProject().getIconColor() == BallColor.NOTBUILT ? "white" : proj.getProject().getIconColor().toString().toLowerCase();
         return escapeString(proj.getName()) +
-                " [label=<" + stripFunction.apply(proj.getName()) + "> " +
+                " [" +
+                " fillcolor=" + statusColor +
+                " label=<" + stripFunction.apply(proj.getName()) + "> " +
         		" tooltip=" + escapeString(proj.getName()) +
                 " href=" + getEscapedProjectUrl(proj) + "]";
     }
